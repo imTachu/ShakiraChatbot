@@ -39,7 +39,7 @@ This bot is available in Facebook Messenger.
 [credentials]: https://github.com/awslabs/chalice#credentials
 [facebook-deploy]: http://docs.aws.amazon.com/lex/latest/dg/fb-bot-association.html
 [hackathon-main]: http://www.amazondcn.com/challenge/index.html
-[travisci-badge]: https://travis-ci.com/imTachu/ShakiraChatbot.svg?token=FXoqSPyhGxTJyV3aAbkJ&branch=master
+[travisci-badge]: https://travis-ci.org/imTachu/ShakiraChatbot.svg?branch=master
 [travisci-builds]: https://travis-ci.com/imTachu/ShakiraChatbot
 [virtualenv]: http://python-guide-pt-br.readthedocs.io/en/latest/dev/virtualenvs/
 
