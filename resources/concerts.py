@@ -65,7 +65,7 @@ CONCERTS = {
         'date': datetime(2017, 11, 22, 19, 0),
         'tickets': 'http://www.blueticket.pt/Event/3150'
     },
-    'A Coruña': {
+    'A Coruna': {
         'area': 'Europe',
         'country': 'Spain',
         'venue': 'Coliseum',

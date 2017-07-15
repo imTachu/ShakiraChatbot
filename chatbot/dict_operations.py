@@ -17,6 +17,13 @@ def find_album_by_name(album_name):
     return ALBUMS[album_name]
 
 
+def find_album_by_song(song_name):
+    for album in ALBUMS:
+        for song in ALBUMS[album]['songs']:
+            if song == song_name:
+                return album
+
+
 def fetch_concert_locations():
     return fetch_concert_cities() | fetch_concert_countries() | fetch_concert_areas() | fetch_concert_venues()
 

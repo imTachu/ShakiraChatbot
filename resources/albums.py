@@ -40,7 +40,7 @@ ALBUMS = {
                   '¿Dónde estás, corazón?',
                   'Se quiere, se mata']
     },
-    'Dónde Están los Ladrones?': {
+    'Donde Están los Ladrones': {
         'release_date': datetime(1998, 9, 29),
         'songs': ['Ciega, sordomuda',
                   'Si te vas',
@@ -70,7 +70,7 @@ ALBUMS = {
                   'Suerte',
                   'Te aviso, te anuncio']
     },
-    'Fijación Oral, Vol. 1': {
+    'Fijacion Oral, Vol. 1': {
         'release_date': datetime(2005, 6, 3),
         'songs': ['En tus pupilas',
                   'La pared',

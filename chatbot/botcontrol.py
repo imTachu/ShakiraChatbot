@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import print_function
-from chatbot.dict_operations import fetch_concert_locations, fetch_albums, find_album_by_name, format_concerts
+from chatbot.dict_operations import fetch_concert_locations, fetch_albums, fetch_songs, find_album_by_name, find_album_by_song, format_concerts
 from chatbot.lex_handler import close, close_with_response_card, delegate, elicit_slot, get_slots
 from resources.helper_responses import HELPER_RESPONSES
 from contextlib import closing
@@ -19,6 +19,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
 s3 = boto3.resource('s3', region_name='us-east-1')
+s3_client = boto3.client('s3', region_name='us-east-1')
 polly = boto3.client('polly', 'us-east-1')
 bucket = s3.Bucket('shakirachatbot')
 secure_random = random.SystemRandom()
@@ -40,12 +41,11 @@ def about_album(intent_request):
     albums = [s for s in fetch_albums() if album_slot.lower() in s.lower()]
 
     if len(albums) == 0:
-        response = secure_random.choice(HELPER_RESPONSES)
+        response = 'I\'m so sorry, I don\'t think she has an album ' + str(album_slot) + '.'
     else:
         album_name = albums[0]
         album = find_album_by_name(album_name)
         response = album_name + ' was released on ' + album['release_date'].strftime('%A %d of %B of %Y') + '. It\'s songs are: \n* ' + '\n* '.join(album['songs'])
-    print(response)
     return close(intent_request['sessionAttributes'], 'Fulfilled', response)
 
 
@@ -54,20 +54,19 @@ def about_song(intent_request):
 
     slots = get_slots(intent_request)
     song_slot = slots['song']
-    # create_audio_file()
-    return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', None, None, None, 'https://s3.amazonaws.com/shakirachatbot/singing_files/nanxxx.mp3', None)
 
+    if song_slot is None:
+        return elicit_slot(intent_request['sessionAttributes'],
+                           intent_request['currentIntent']['name'],
+                           slots, 'song', 'About what song do you want to know?')
 
-def create_audio_file():
-    try:
-        response = polly.synthesize_speech(
-            Text='And I\'m on tonight you know my hips don\'t lie and I\'m starting to feel it\'s right. All the attraction, the tension, Don\'t you see baby, this is perfection',
-            OutputFormat="mp3",
-            VoiceId="Joanna")
-        with closing(response["AudioStream"]) as stream:
-            bucket.put_object(Key='singing_files/{}.mp3'.format('nanxxx'), Body=stream.read())
-    except BotoCoreError as error:
-        logging.error(error)
+    song = [s for s in fetch_songs() if song_slot.lower() in s.lower()][0]
+    output_session_attributes = intent_request['sessionAttributes'] if intent_request['sessionAttributes'] is not None else {}
+    album_name = find_album_by_song(song)
+    album = find_album_by_name(album_name)
+    response = song + ' is part of the album ' + album_name + ' which was released on ' + album['release_date'].strftime('%A %d of %B of %Y') + '.'
+    output_session_attributes['song'] = song
+    return close(output_session_attributes, 'Fulfilled', response)
 
 
 def deal_with_it(intent_request):
@@ -106,11 +105,42 @@ def helper(intent_request):
 def random_gif(intent_request):
     logger.info(intent_request)
 
-    s3_client = boto3.client('s3', region_name='us-east-1')
     gif = secure_random.choice(list(bucket.objects.filter(Prefix='gifs/')))
     url = '{}/{}/{}'.format(s3_client.meta.endpoint_url, gif.bucket_name, gif.key)
-
     return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', None, 'A gif :)', None, url, url)
+
+
+def sing_a_song(intent_request):
+    logger.info(intent_request)
+
+    slots = get_slots(intent_request)
+    song_slot = slots['song']
+    output_session_attributes = intent_request['sessionAttributes'] if intent_request['sessionAttributes'] is not None else {}
+    song_from_session = output_session_attributes.get('song')
+    if song_from_session is None and song_slot is None:
+        return elicit_slot(output_session_attributes,
+                           intent_request['currentIntent']['name'],
+                           slots, 'song', 'What song do you want me to sing?')
+    if song_slot is not None:
+        song = song_slot
+    else:
+        song = song_from_session
+    if song == 'Hips don\'t lie':
+        response = 'This is your lucky day! I can sing that one :)'
+    else:
+        response = 'I still don\'t know that one, but I can sing another one ;)'
+    filename = 'singing_files/shak_{}.mp3'.format(secure_random.random())
+    try:
+        audio_stream = polly.synthesize_speech(
+            Text='And I\'m on tonight you know my hips don\'t lie and I\'m starting to feel it\'s right. All the attraction, the tension, don\'t you see baby, this is perfection.',
+            OutputFormat="mp3",
+            VoiceId="Joanna")
+        with closing(audio_stream["AudioStream"]) as stream:
+            bucket.put_object(Key=filename, Body=stream.read())
+    except BotoCoreError as error:
+        logging.error(error)
+
+    return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', response, 'Click it, that\'s me singing', None, '{}/{}/{}'.format(s3_client.meta.endpoint_url, bucket.name, filename), None)
 
 
 def social_media(intent_request):
@@ -183,6 +213,8 @@ def dispatch(intent_request):
         return helper(intent_request)
     elif intent_name == 'RandomGif':
         return random_gif(intent_request)
+    elif intent_name == 'Sing':
+        return sing_a_song(intent_request)
     elif intent_name == 'SocialMedia':
         return social_media(intent_request)
     elif intent_name == 'Thanks':

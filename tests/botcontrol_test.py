@@ -12,17 +12,24 @@ def test_about_album():
     assert response['dialogAction']['type'] == 'Close'
 
 
+def test_about_album_partial_name():
+    response = botcontrol.about_album(intent_request_mock('AboutAlbum', {u'album': 'Oral Fixation'}))
+    assert response['dialogAction']['type'] == 'Close'
+
+
 def test_about_album_with_accent():
     response = botcontrol.about_album(intent_request_mock('AboutAlbum', {u'album': 'Dónde Están los Ladrones?'}))
     assert response['dialogAction']['type'] == 'Close'
 
 
 def test_about_song_unspecified_song():
-    botcontrol.about_song(intent_request_mock('AboutSong', {u'song': None}))
+    response = botcontrol.about_song(intent_request_mock('AboutSong', {u'song': None}))
+    assert response['dialogAction']['type'] == 'ElicitSlot'
 
 
 def test_about_song():
-    botcontrol.about_song(intent_request_mock('AboutSong', {u'song': 'Chantaje'}))
+    response = botcontrol.about_song(intent_request_mock('AboutSong', {u'song': 'Chantaje'}))
+    assert response['dialogAction']['type'] == 'Close'
 
 
 def test_deal_with_it_negative():
@@ -54,6 +61,16 @@ def test_random_gif():
 
 def test_social_media():
     botcontrol.social_media(intent_request_mock('SocialMedia', None))
+
+
+def test_sing_a_song_from_session_attribute():
+    response = botcontrol.sing_a_song(intent_request_mock('Sing', {u'song': None}))
+    assert response['dialogAction']['message']['content'] == 'I still don\'t know that one, but I can sing another one ;)'
+
+
+def test_sing_a_song_from_slot():
+    response = botcontrol.sing_a_song(intent_request_mock('Sing', {u'song': 'Hips don\'t lie'}))
+    assert response['dialogAction']['message']['content'] == 'This is your lucky day! I can sing that one :)'
 
 
 def test_thanks():
@@ -100,4 +117,4 @@ def intent_request_mock(intent_name, slot, input_transcript='anything'):
             u'bot': {u'alias': None, u'version': u'$LATEST', u'name': u'ShakiraChatbot'},
             u'userId': u'dq64axgllu3znz8j663b23rh7nohadni', u'inputTranscript': input_transcript,
             u'invocationSource': u'DialogCodeHook', u'outputDialogMode': u'Text', u'messageVersion': u'1.0',
-            u'sessionAttributes': None}
+            u'sessionAttributes': {u'song': u'Chantaje'}}

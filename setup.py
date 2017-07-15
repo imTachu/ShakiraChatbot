@@ -125,25 +125,6 @@ deal_with_it_intent = {
 }
 
 
-find_lyrics_intent = {
-    u'dialogCodeHook': {u'messageVersion': u'1.0',
-                        u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(ACCOUNT_ID, FUNCTION_NAME)},
-    u'fulfillmentActivity': {u'codeHook': {u'messageVersion': u'1.0',
-                                           u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(
-                                               ACCOUNT_ID, FUNCTION_NAME)},
-                             u'type': u'CodeHook'},
-    u'name': u'FindLyrics',
-    u'sampleUtterances': [u'Lyrics of {song} song', u'{song} lyrics', u'Lyrics'],
-    u'slots': [{u'name': u'song',
-                u'priority': 1,
-                u'sampleUtterances': [],
-                u'slotConstraint': u'Required',
-                u'slotType': u'Songs',
-                u'slotTypeVersion': u'$LATEST',
-                u'valueElicitationPrompt': {u'maxAttempts': 2,
-                                            u'messages': [{u'content': u'Of what song you want the lyrics?', u'contentType': u'PlainText'}]}}],
-}
-
 greeting_intent = {
     u'dialogCodeHook': {u'messageVersion': u'1.0',
                         u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(ACCOUNT_ID, FUNCTION_NAME)},
@@ -173,6 +154,26 @@ random_gif = {
     u'name': u'RandomGif',
     u'sampleUtterances': [u'Photos', u'Random gif', u'Give me a gif', u'gif']
 }
+
+sing_intent = {
+    u'dialogCodeHook': {u'messageVersion': u'1.0',
+                        u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(ACCOUNT_ID, FUNCTION_NAME)},
+    u'fulfillmentActivity': {u'codeHook': {u'messageVersion': u'1.0',
+                                           u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(
+                                               ACCOUNT_ID, FUNCTION_NAME)},
+                             u'type': u'CodeHook'},
+    u'name': u'Sing',
+    u'sampleUtterances': [u'Sing a song'],
+    u'slots': [{u'name': u'song',
+                u'priority': 1,
+                u'sampleUtterances': [],
+                u'slotConstraint': u'Required',
+                u'slotType': u'Songs',
+                u'slotTypeVersion': u'$LATEST',
+                u'valueElicitationPrompt': {u'maxAttempts': 2,
+                                            u'messages': [{u'content': u'What song?', u'contentType': u'PlainText'}]}}],
+}
+
 
 social_media = {
     u'dialogCodeHook': {u'messageVersion': u'1.0',
@@ -248,10 +249,10 @@ bot = {
     u'intents': [{u'intentName': u'AboutAlbum', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'AboutSong', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'DealWithIt', u'intentVersion': u'$LATEST'},
-                 {u'intentName': u'FindLyrics', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'Greeting', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'Helper', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'RandomGif', u'intentVersion': u'$LATEST'},
+                 {u'intentName': u'Sing', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'SocialMedia', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'Thanks', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'WhenConcert', u'intentVersion': u'$LATEST'}],
@@ -349,14 +350,6 @@ except ClientError, e:
         raise
 
 try:
-    lex.delete_intent(name='FindLyrics')
-    print 'Deleted intent FindLyrics'
-    wait(3)
-except ClientError, e:
-    if e.response['Error']['Code'] != 'NotFoundException':
-        raise
-
-try:
     lex.delete_intent(name='Greeting')
     print 'Deleted intent Greeting'
     wait(3)
@@ -375,6 +368,14 @@ except ClientError, e:
 try:
     lex.delete_intent(name='RandomGif')
     print 'Deleted intent RandomGif'
+    wait(3)
+except ClientError, e:
+    if e.response['Error']['Code'] != 'NotFoundException':
+        raise
+
+try:
+    lex.delete_intent(name='Sing')
+    print 'Deleted intent Sing'
     wait(3)
 except ClientError, e:
     if e.response['Error']['Code'] != 'NotFoundException':
@@ -469,10 +470,6 @@ lex.put_intent(**deal_with_it_intent)
 wait(3)
 print 'Created DealWithIt intent'
 
-lex.put_intent(**find_lyrics_intent)
-wait(3)
-print 'Created FindLyrics intent'
-
 lex.put_intent(**greeting_intent)
 wait(3)
 print 'Created Greeting intent'
@@ -484,6 +481,10 @@ print 'Created Helper intent'
 lex.put_intent(**random_gif)
 wait(3)
 print 'Created RandomGif intent'
+
+lex.put_intent(**sing_intent)
+wait(3)
+print 'Created Sing intent'
 
 lex.put_intent(**social_media)
 wait(3)
