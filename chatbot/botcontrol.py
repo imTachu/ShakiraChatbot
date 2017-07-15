@@ -6,9 +6,14 @@ from resources.helper_responses import HELPER_RESPONSES
 from contextlib import closing
 import boto3
 import logging
+import os
 import random
+import unirest
+import urllib
 from botocore.exceptions import BotoCoreError, ClientError
 
+
+SENTIMENT_ANALYSIS_API = 'https://twinword-sentiment-analysis.p.mashape.com/analyze/?text={}'
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -17,6 +22,7 @@ s3 = boto3.resource('s3', region_name='us-east-1')
 polly = boto3.client('polly', 'us-east-1')
 bucket = s3.Bucket('shakirachatbot')
 secure_random = random.SystemRandom()
+
 
 """ --- Intents --- """
 
@@ -49,7 +55,7 @@ def about_song(intent_request):
     slots = get_slots(intent_request)
     song_slot = slots['song']
     # create_audio_file()
-    close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', None, None, None, 'https://s3.amazonaws.com/shakirachatbot/singing_files/nanxxx.mp3', None)
+    return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', None, None, None, 'https://s3.amazonaws.com/shakirachatbot/singing_files/nanxxx.mp3', None)
 
 
 def create_audio_file():
@@ -67,14 +73,28 @@ def create_audio_file():
 def deal_with_it(intent_request):
     logger.info(intent_request)
 
-    close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'I know, I\'m amazing #DealWithIt', None, None,
-                             None, 'https://s3.amazonaws.com/shakirachatbot/gifs/yo.gif')
+    response = unirest.get(
+        SENTIMENT_ANALYSIS_API.format(urllib.quote_plus(intent_request['inputTranscript'])),
+        headers={
+            'X-Mashape-Key': os.environ['MASHAPE_API_KEY'],
+            'Accept': 'application/json'
+        }
+        )
+    sentiment_type = response.body['type']
+    if sentiment_type == 'positive':
+        return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'And, you, YOU are amazing!', '<3 <3 <3', None,
+                             None, 'https://s3.amazonaws.com/shakirachatbot/gifs/dealwithit_p.gif')
+    elif sentiment_type == 'neutral':
+        return close(intent_request['sessionAttributes'], 'Fulfilled', 'Bah, ok, whatever ;)')
+    elif sentiment_type == 'negative':
+        return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'Actually... I KNOW I\'m pretty amazing!', '#DealWithIt', None,
+                             None, 'https://s3.amazonaws.com/shakirachatbot/gifs/dealwithit_n.gif')
 
 
 def greeting(intent_request):
     logger.info(intent_request)
 
-    close(intent_request['sessionAttributes'], 'Fulfilled', 'Hello! :D')
+    return close(intent_request['sessionAttributes'], 'Fulfilled', 'Hello! :D')
 
 
 def helper(intent_request):
@@ -90,8 +110,7 @@ def random_gif(intent_request):
     gif = secure_random.choice(list(bucket.objects.filter(Prefix='gifs/')))
     url = '{}/{}/{}'.format(s3_client.meta.endpoint_url, gif.bucket_name, gif.key)
 
-    return close_with_response_card(intent_request['sessionAttributes'],
-                                    'Fulfilled', None, None, None, url, url)
+    return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', None, 'A gif :)', None, url, url)
 
 
 def social_media(intent_request):
@@ -114,7 +133,7 @@ def social_media(intent_request):
 def thanks(intent_request):
     logger.info(intent_request)
 
-    close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'Anytime gorgeous! :3', None, None,
+    return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'Awww', 'Anytime gorgeous! :3', None,
                              None, 'https://s3.amazonaws.com/shakirachatbot/gifs/yep.gif')
 
 

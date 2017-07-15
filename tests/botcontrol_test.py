@@ -17,7 +17,7 @@ def test_about_album_with_accent():
     assert response['dialogAction']['type'] == 'Close'
 
 
-def test_about_song():
+def test_about_song_unspecified_song():
     botcontrol.about_song(intent_request_mock('AboutSong', {u'song': None}))
 
 
@@ -25,8 +25,19 @@ def test_about_song():
     botcontrol.about_song(intent_request_mock('AboutSong', {u'song': 'Chantaje'}))
 
 
-def test_deal_with_it():
-    botcontrol.deal_with_it(intent_request_mock('DealWithIt', None))
+def test_deal_with_it_negative():
+    response = botcontrol.deal_with_it(intent_request_mock('DealWithIt', None, 'Agh, you suck!'))
+    assert response['dialogAction']['message']['content'] == 'Actually... I KNOW I\'m pretty amazing!'
+
+
+def test_deal_with_it_neutral():
+    response = botcontrol.deal_with_it(intent_request_mock('DealWithIt', None, 'bah'))
+    assert response['dialogAction']['message']['content'] == 'Bah, ok, whatever ;)'
+
+
+def test_deal_with_it_positive():
+    response = botcontrol.deal_with_it(intent_request_mock('DealWithIt', None, 'I love you'))
+    assert response['dialogAction']['message']['content'] == 'And, you, YOU are amazing!'
 
 
 def test_greeting():
@@ -84,9 +95,9 @@ def test_when_concert_by_area():
     assert response['dialogAction']['type'] == 'ElicitSlot'
 
 
-def intent_request_mock(intent_name, slot):
+def intent_request_mock(intent_name, slot, input_transcript='anything'):
     return {u'currentIntent': {u'slots': slot, u'name': intent_name, u'confirmationStatus': u'None'},
             u'bot': {u'alias': None, u'version': u'$LATEST', u'name': u'ShakiraChatbot'},
-            u'userId': u'dq64axgllu3znz8j663b23rh7nohadni', u'inputTranscript': u'about any',
+            u'userId': u'dq64axgllu3znz8j663b23rh7nohadni', u'inputTranscript': input_transcript,
             u'invocationSource': u'DialogCodeHook', u'outputDialogMode': u'Text', u'messageVersion': u'1.0',
             u'sessionAttributes': None}

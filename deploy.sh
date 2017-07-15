@@ -12,6 +12,9 @@ trap 'rm -f -- "$ARTIFACT"' INT TERM HUP EXIT
 # Package the code.
 zip -r "${ARTIFACT}" chatbot resources
 
+cd $VIRTUAL_ENV/lib/python2.7/site-packages
+zip -r9 "${ARTIFACT}" *
+
 # Deploy the code.
 aws lambda update-function-code \
   --region us-east-1 \

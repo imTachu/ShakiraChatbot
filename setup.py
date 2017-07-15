@@ -26,6 +26,7 @@ with ZipFile('lambda-package.zip', 'w') as myzip:
 botcontrol_function = {
     u'Code': {u'ZipFile': open('lambda-package.zip').read()},
     u'Description': u'Function controling the ShakiraChatbot, powered up by Lex',
+    u'Environment': {u'Variables': {u'MASHAPE_API_KEY': os.environ['MASHAPE_API_KEY']}},
     u'FunctionName': u'{}'.format(FUNCTION_NAME),
     u'Handler': u'chatbot/botcontrol.lambda_handler',
     u'MemorySize': 128,
@@ -120,7 +121,7 @@ deal_with_it_intent = {
                                            u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(
                                                ACCOUNT_ID, FUNCTION_NAME)}, u'type': u'CodeHook'},
     u'name': u'DealWithIt',
-    u'sampleUtterances': [u'You are amazing', u'u r amazing', u'you suck', u'u suck', u'this is retarded', u'I hate you', u'I love you']
+    u'sampleUtterances': [u'You are amazing', u'u r amazing', u'you suck', u'u suck', u'this is retarded', u'I hate you', u'I love you', u'this is the best chatbot', u'this is the worst chatbot']
 }
 
 
@@ -150,7 +151,7 @@ greeting_intent = {
                                            u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(
                                                ACCOUNT_ID, FUNCTION_NAME)}, u'type': u'CodeHook'},
     u'name': u'Greeting',
-    u'sampleUtterances': [u'hello', u'hi', u'yo', u'what\s up']
+    u'sampleUtterances': [u'hello', u'hi', u'yo', u'what\'s up']
 }
 
 helper_intent = {
@@ -201,7 +202,7 @@ when_concert_intent = {
                              u'type': u'CodeHook'},
     u'name': u'WhenConcert',
     u'sampleUtterances': [u'Is she coming', u'When is the concert',  u'What are the concerts', u'Is there a concert', u'When is her concert',
-                          u'When is the concert at {location}'],
+                          u'When is the concert at {location}', u'When is the concert in {location}'],
     u'slots': [{u'name': u'location',
                 u'priority': 1,
                 u'sampleUtterances': [],
@@ -454,7 +455,7 @@ wait(3)
 
 lex.put_slot_type(**songs_slot_type)
 print 'Created slot type Songs'
-wait(5)
+wait(7)
 
 lex.put_intent(**about_album_intent)
 wait(3)
