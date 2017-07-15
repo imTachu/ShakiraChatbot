@@ -12,6 +12,10 @@ def test_about_album():
 
 
 def test_about_song():
+    botcontrol.about_song(intent_request_mock('AboutSong', {u'song': None}))
+
+
+def test_about_song():
     botcontrol.about_song(intent_request_mock('AboutSong', {u'song': 'Chantaje'}))
 
 
