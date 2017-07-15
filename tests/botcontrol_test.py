@@ -1,3 +1,4 @@
+# coding=utf-8
 import chatbot.botcontrol as botcontrol
 
 
@@ -11,6 +12,11 @@ def test_about_album():
     assert response['dialogAction']['type'] == 'Close'
 
 
+def test_about_album_with_accent():
+    response = botcontrol.about_album(intent_request_mock('AboutAlbum', {u'album': 'Dónde Están los Ladrones?'}))
+    assert response['dialogAction']['type'] == 'Close'
+
+
 def test_about_song():
     botcontrol.about_song(intent_request_mock('AboutSong', {u'song': None}))
 
@@ -19,8 +25,28 @@ def test_about_song():
     botcontrol.about_song(intent_request_mock('AboutSong', {u'song': 'Chantaje'}))
 
 
+def test_deal_with_it():
+    botcontrol.deal_with_it(intent_request_mock('DealWithIt', None))
+
+
+def test_greeting():
+    botcontrol.greeting(intent_request_mock('Greeting', None))
+
+
+def test_helper():
+    botcontrol.helper(intent_request_mock('Helper', None))
+
+
 def test_random_gif():
     botcontrol.random_gif(intent_request_mock('RandomGif', None))
+
+
+def test_social_media():
+    botcontrol.social_media(intent_request_mock('SocialMedia', None))
+
+
+def test_thanks():
+    botcontrol.thanks(intent_request_mock('Thanks', None))
 
 
 def test_when_concert_unspecified_location():

@@ -64,6 +64,19 @@ def create_audio_file():
         logging.error(error)
 
 
+def deal_with_it(intent_request):
+    logger.info(intent_request)
+
+    close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'I know, I\'m amazing #DealWithIt', None, None,
+                             None, 'https://s3.amazonaws.com/shakirachatbot/gifs/yo.gif')
+
+
+def greeting(intent_request):
+    logger.info(intent_request)
+
+    close(intent_request['sessionAttributes'], 'Fulfilled', 'Hello! :D')
+
+
 def helper(intent_request):
     logger.info(intent_request)
 
@@ -96,6 +109,13 @@ def social_media(intent_request):
                                      'title': 'www.shakira.com',
                                      'subTitle': 'https://twitter.com/shakira\nhttps://www.facebook.com/shakira'
                                  }]}}}
+
+
+def thanks(intent_request):
+    logger.info(intent_request)
+
+    close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'Anytime gorgeous! :3', None, None,
+                             None, 'https://s3.amazonaws.com/shakirachatbot/gifs/yep.gif')
 
 
 def when_concert(intent_request):
@@ -136,12 +156,18 @@ def dispatch(intent_request):
         return about_album(intent_request)
     elif intent_name == 'AboutSong':
         return about_song(intent_request)
+    elif intent_name == 'DealWithIt':
+        return deal_with_it(intent_request)
+    elif intent_name == 'Greeting':
+        return greeting(intent_request)
     elif intent_name == 'Helper':
         return helper(intent_request)
     elif intent_name == 'RandomGif':
         return random_gif(intent_request)
     elif intent_name == 'SocialMedia':
         return social_media(intent_request)
+    elif intent_name == 'Thanks':
+        return thanks(intent_request)
     elif intent_name == 'WhenConcert':
         return when_concert(intent_request)
 

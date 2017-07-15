@@ -113,6 +113,17 @@ about_song_intent = {
                                             u'messages': [{u'content': u'What song?', u'contentType': u'PlainText'}]}}],
 }
 
+deal_with_it_intent = {
+    u'dialogCodeHook': {u'messageVersion': u'1.0',
+                        u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(ACCOUNT_ID, FUNCTION_NAME)},
+    u'fulfillmentActivity': {u'codeHook': {u'messageVersion': u'1.0',
+                                           u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(
+                                               ACCOUNT_ID, FUNCTION_NAME)}, u'type': u'CodeHook'},
+    u'name': u'DealWithIt',
+    u'sampleUtterances': [u'You are amazing', u'u r amazing', u'you suck', u'u suck', u'this is retarded', u'I hate you', u'I love you']
+}
+
+
 find_lyrics_intent = {
     u'dialogCodeHook': {u'messageVersion': u'1.0',
                         u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(ACCOUNT_ID, FUNCTION_NAME)},
@@ -130,6 +141,16 @@ find_lyrics_intent = {
                 u'slotTypeVersion': u'$LATEST',
                 u'valueElicitationPrompt': {u'maxAttempts': 2,
                                             u'messages': [{u'content': u'Of what song you want the lyrics?', u'contentType': u'PlainText'}]}}],
+}
+
+greeting_intent = {
+    u'dialogCodeHook': {u'messageVersion': u'1.0',
+                        u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(ACCOUNT_ID, FUNCTION_NAME)},
+    u'fulfillmentActivity': {u'codeHook': {u'messageVersion': u'1.0',
+                                           u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(
+                                               ACCOUNT_ID, FUNCTION_NAME)}, u'type': u'CodeHook'},
+    u'name': u'Greeting',
+    u'sampleUtterances': [u'hello', u'hi', u'yo', u'what\s up']
 }
 
 helper_intent = {
@@ -160,6 +181,16 @@ social_media = {
                                                ACCOUNT_ID, FUNCTION_NAME)}, u'type': u'CodeHook'},
     u'name': u'SocialMedia',
     u'sampleUtterances': [u'What\'s her contact', u'Social media', u'Twitter', u'I want her social media']
+}
+
+thanks_intent = {
+    u'dialogCodeHook': {u'messageVersion': u'1.0',
+                        u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(ACCOUNT_ID, FUNCTION_NAME)},
+    u'fulfillmentActivity': {u'codeHook': {u'messageVersion': u'1.0',
+                                           u'uri': u'arn:aws:lambda:us-east-1:{}:function:{}'.format(
+                                               ACCOUNT_ID, FUNCTION_NAME)}, u'type': u'CodeHook'},
+    u'name': u'Thanks',
+    u'sampleUtterances': [u'thanks', u'thank you', u'ty']
 }
 
 when_concert_intent = {
@@ -215,10 +246,13 @@ bot = {
                                                                             u'contentType': u'PlainText'}]},
     u'intents': [{u'intentName': u'AboutAlbum', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'AboutSong', u'intentVersion': u'$LATEST'},
+                 {u'intentName': u'DealWithIt', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'FindLyrics', u'intentVersion': u'$LATEST'},
+                 {u'intentName': u'Greeting', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'Helper', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'RandomGif', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'SocialMedia', u'intentVersion': u'$LATEST'},
+                 {u'intentName': u'Thanks', u'intentVersion': u'$LATEST'},
                  {u'intentName': u'WhenConcert', u'intentVersion': u'$LATEST'}],
     u'locale': u'en-US',
     u'name': u'ShakiraChatbot',
@@ -306,8 +340,24 @@ except ClientError, e:
         raise
 
 try:
+    lex.delete_intent(name='DealWithIt')
+    print 'Deleted intent DealWithIt'
+    wait(3)
+except ClientError, e:
+    if e.response['Error']['Code'] != 'NotFoundException':
+        raise
+
+try:
     lex.delete_intent(name='FindLyrics')
     print 'Deleted intent FindLyrics'
+    wait(3)
+except ClientError, e:
+    if e.response['Error']['Code'] != 'NotFoundException':
+        raise
+
+try:
+    lex.delete_intent(name='Greeting')
+    print 'Deleted intent Greeting'
     wait(3)
 except ClientError, e:
     if e.response['Error']['Code'] != 'NotFoundException':
@@ -332,6 +382,14 @@ except ClientError, e:
 try:
     lex.delete_intent(name='SocialMedia')
     print 'Deleted intent SocialMedia'
+    wait(3)
+except ClientError, e:
+    if e.response['Error']['Code'] != 'NotFoundException':
+        raise
+
+try:
+    lex.delete_intent(name='Thanks')
+    print 'Deleted intent Thanks'
     wait(3)
 except ClientError, e:
     if e.response['Error']['Code'] != 'NotFoundException':
@@ -406,9 +464,17 @@ lex.put_intent(**about_song_intent)
 wait(3)
 print 'Created AboutSong intent'
 
+lex.put_intent(**deal_with_it_intent)
+wait(3)
+print 'Created DealWithIt intent'
+
 lex.put_intent(**find_lyrics_intent)
 wait(3)
 print 'Created FindLyrics intent'
+
+lex.put_intent(**greeting_intent)
+wait(3)
+print 'Created Greeting intent'
 
 lex.put_intent(**helper_intent)
 wait(3)
@@ -421,6 +487,10 @@ print 'Created RandomGif intent'
 lex.put_intent(**social_media)
 wait(3)
 print 'Created SocialMedia intent'
+
+lex.put_intent(**thanks_intent)
+wait(3)
+print 'Created Thanks intent'
 
 lex.put_intent(**when_concert_intent)
 wait(3)
