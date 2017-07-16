@@ -56,11 +56,12 @@ inline_policy = {
                 u'polly:SynthesizeSpeech',
                 u's3:ListBucket',
                 u's3:PutObject',
+                u's3:PutObjectAcl',
                 u'logs:CreateLogGroup',
                 u'logs:CreateLogStream',
                 u'logs:PutLogEvents'
             ],
-            u'Resource': '*'
+            u'Resource': u'*'
         }
     ]
 }

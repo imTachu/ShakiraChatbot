@@ -71,7 +71,7 @@ def test_sing_a_song_from_session_attribute():
 
 
 def test_sing_a_song_from_slot():
-    response = botcontrol.sing_a_song(intent_request_mock('Sing', {u'song': 'Hips don\'t lie'}))
+    response = botcontrol.sing_a_song(intent_request_mock('Sing', {u'song': 'hips don\'t lie'}))
     assert response['dialogAction']['message']['content'] == 'This is your lucky day! I can sing that one :)'
 
 

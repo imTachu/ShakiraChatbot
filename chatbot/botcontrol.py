@@ -45,7 +45,7 @@ def about_album(intent_request):
     else:
         album_name = albums[0]
         album = find_album_by_name(album_name)
-        response = album_name + ' was released on ' + album['release_date'].strftime('%A %d of %B of %Y') + '. It\'s songs are: \n* ' + '\n* '.join(album['songs'])
+        response = album_name + ' was released on ' + album['release_date'].strftime('%A %d of %B of %Y') + '. Its songs are: \n* ' + '\n* '.join(album['songs'])
     return close(intent_request['sessionAttributes'], 'Fulfilled', response)
 
 
@@ -82,18 +82,18 @@ def deal_with_it(intent_request):
     sentiment_type = response.body['type']
     if sentiment_type == 'positive':
         return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'And, you, YOU are amazing!', '<3 <3 <3', None,
-                             None, 'https://s3.amazonaws.com/shakirachatbot/gifs/dealwithit_p.gif')
+                                        'https://s3.amazonaws.com/shakirachatbot/gifs/dealwithit_p.gif', 'https://s3.amazonaws.com/shakirachatbot/gifs/dealwithit_p.gif')
     elif sentiment_type == 'neutral':
         return close(intent_request['sessionAttributes'], 'Fulfilled', 'Bah, ok, whatever ;)')
     elif sentiment_type == 'negative':
         return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'That\'s a pity :/ ...nah, I KNOW I\'m pretty amazing!', '#DealWithIt', None,
-                             None, 'https://s3.amazonaws.com/shakirachatbot/gifs/dealwithit_n.gif')
+                                        'https://s3.amazonaws.com/shakirachatbot/gifs/dealwithit_n.gif', 'https://s3.amazonaws.com/shakirachatbot/gifs/dealwithit_n.gif')
 
 
 def greeting(intent_request):
     logger.info(intent_request)
 
-    return close(intent_request['sessionAttributes'], 'Fulfilled', 'Hello! :D')
+    return close(intent_request['sessionAttributes'], 'Fulfilled', 'Hello! :D, if in doubt on what to ask, type: examples')
 
 
 def helper(intent_request):
@@ -107,7 +107,7 @@ def random_gif(intent_request):
 
     gif = secure_random.choice(list(bucket.objects.filter(Prefix='gifs/')))
     url = '{}/{}/{}'.format(s3_client.meta.endpoint_url, gif.bucket_name, gif.key)
-    return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', None, 'A gif :)', None, url, url)
+    return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'You can always ask for more gifs!', 'A gif :)', None, url, url)
 
 
 def sing_a_song(intent_request):
@@ -125,7 +125,7 @@ def sing_a_song(intent_request):
         song = song_slot
     else:
         song = song_from_session
-    if song == 'Hips don\'t lie':
+    if str(song).lower() == 'Hips don\'t lie'.lower():
         response = 'This is your lucky day! I can sing that one :)'
     else:
         response = 'I still don\'t know {}, but I can sing another one ;)'.format(song)
@@ -136,11 +136,11 @@ def sing_a_song(intent_request):
             OutputFormat='mp3',
             VoiceId='Joanna')
         with closing(audio_stream['AudioStream']) as stream:
-            bucket.put_object(Key=filename, Body=stream.read())
+            bucket.put_object(Key=filename, Body=stream.read(), ACL='public-read')
     except BotoCoreError as error:
         logging.error(error)
 
-    return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', response, 'Click it, that\'s me singing', None, '{}/{}/{}'.format(s3_client.meta.endpoint_url, bucket.name, filename), None)
+    return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', response, 'Click it, that\'s me singing', None, '{}/{}/{}'.format(s3_client.meta.endpoint_url, bucket.name, filename), 'https://s3.amazonaws.com/shakirachatbot/play_icon.png')
 
 
 def social_media(intent_request):
@@ -163,8 +163,7 @@ def social_media(intent_request):
 def thanks(intent_request):
     logger.info(intent_request)
 
-    return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'Awww', 'Anytime gorgeous! :3', None,
-                             None, 'https://s3.amazonaws.com/shakirachatbot/gifs/yep.gif')
+    return close(intent_request['sessionAttributes'], 'Fulfilled', 'Anytime gorgeous! :3')
 
 
 def when_concert(intent_request):
