@@ -40,27 +40,27 @@ permission = {
 }
 
 role_policy_document = {
-        'Version': '2012-10-17',
-        'Statement': [
-            {'Effect': 'Allow', 'Principal': {'Service': ['lambda.amazonaws.com']},
-             'Action': ['sts:AssumeRole']},
+        u'Version': u'2012-10-17',
+        u'Statement': [
+            {u'Effect': u'Allow', u'Principal': {u'Service': [u'lambda.amazonaws.com']},
+             u'Action': [u'sts:AssumeRole']},
         ]
     }
 
 inline_policy = {
-    'Version': '2012-10-17',
-    'Statement': [
+    u'Version': u'2012-10-17',
+    u'Statement': [
         {
-            'Effect': 'Allow',
-            'Action': [
-                'polly:SynthesizeSpeech',
-                's3:ListBucket',
-                's3:PutObject',
-                'logs:CreateLogGroup',
-                'logs:CreateLogStream',
-                'logs:PutLogEvents'
+            u'Effect': u'Allow',
+            u'Action': [
+                u'polly:SynthesizeSpeech',
+                u's3:ListBucket',
+                u's3:PutObject',
+                u'logs:CreateLogGroup',
+                u'logs:CreateLogStream',
+                u'logs:PutLogEvents'
             ],
-            'Resource': '*'
+            u'Resource': '*'
         }
     ]
 }
