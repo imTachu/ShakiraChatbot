@@ -128,14 +128,14 @@ def sing_a_song(intent_request):
     if song == 'Hips don\'t lie':
         response = 'This is your lucky day! I can sing that one :)'
     else:
-        response = 'I still don\'t know that one, but I can sing another one ;)'
+        response = 'I still don\'t know {}, but I can sing another one ;)'.format(song)
     filename = 'singing_files/shak_{}.mp3'.format(secure_random.random())
     try:
         audio_stream = polly.synthesize_speech(
-            Text='And I\'m on tonight you know my hips don\'t lie and I\'m starting to feel it\'s right. All the attraction, the tension, don\'t you see baby, this is perfection.',
-            OutputFormat="mp3",
-            VoiceId="Joanna")
-        with closing(audio_stream["AudioStream"]) as stream:
+            Text='And I\'m on tonight, you know my hips don\'t lie and I\'m starting to feel it\'s right. All the attraction, the tension, don\'t you see baby, this is perfection.',
+            OutputFormat='mp3',
+            VoiceId='Joanna')
+        with closing(audio_stream['AudioStream']) as stream:
             bucket.put_object(Key=filename, Body=stream.read())
     except BotoCoreError as error:
         logging.error(error)
@@ -196,8 +196,7 @@ def dispatch(intent_request):
     Called when the user specifies an intent for this bot.
     """
 
-    logger.debug(
-        'dispatch userId={}, intentName={}'.format(intent_request['userId'], intent_request['currentIntent']['name']))
+    logger.debug('dispatch userId={}, intentName={}'.format(intent_request['userId'], intent_request['currentIntent']['name']))
 
     intent_name = intent_request['currentIntent']['name']
 

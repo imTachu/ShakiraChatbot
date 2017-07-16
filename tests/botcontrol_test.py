@@ -65,7 +65,7 @@ def test_social_media():
 
 def test_sing_a_song_from_session_attribute():
     response = botcontrol.sing_a_song(intent_request_mock('Sing', {u'song': None}))
-    assert response['dialogAction']['message']['content'] == 'I still don\'t know that one, but I can sing another one ;)'
+    assert response['dialogAction']['message']['content'] == 'I still don\'t know {}, but I can sing another one ;)'.format(response['sessionAttributes']['song'])
 
 
 def test_sing_a_song_from_slot():

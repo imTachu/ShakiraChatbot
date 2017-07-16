@@ -1,7 +1,9 @@
+![The _unofficial_ Shakira Chatbot](graphics/banner.jpg)
+
 # The _unofficial_ Shakira Chatbot
 
 [![Build Status][travisci-badge]][travisci-builds] 
-[![Requirements Status][requiresio-badge]](requiresio-url)
+[![Requirements Status][requiresio-badge]][requiresio-url]
 
 ## Usage
 

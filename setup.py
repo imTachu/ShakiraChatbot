@@ -30,7 +30,7 @@ botcontrol_function = {
     u'FunctionName': u'{}'.format(FUNCTION_NAME),
     u'Handler': u'chatbot/botcontrol.lambda_handler',
     u'MemorySize': 128,
-    u'Role': u'arn:aws:iam::{}:role/zzzs'.format(ACCOUNT_ID),
+    u'Role': u'arn:aws:iam::{}:role/shakirachatbot-role'.format(ACCOUNT_ID),
     u'Runtime': u'python2.7',
     u'Timeout': 10,
     u'TracingConfig': {u'Mode': u'PassThrough'},
@@ -46,27 +46,27 @@ permission = {
 }
 
 role_policy_document = {
-        "Version": "2012-10-17",
-        "Statement": [
-            {"Effect": "Allow", "Principal": {"Service": ["lambda.amazonaws.com"]},
-             "Action": ["sts:AssumeRole"]},
+        'Version': '2012-10-17',
+        'Statement': [
+            {'Effect': 'Allow', 'Principal': {'Service': ['lambda.amazonaws.com']},
+             'Action': ['sts:AssumeRole']},
         ]
     }
 
 inline_policy = {
-    "Version": "2012-10-17",
-    "Statement": [
+    'Version': '2012-10-17',
+    'Statement': [
         {
-            "Effect": "Allow",
-            "Action": [
-                "polly:SynthesizeSpeech",
-                "s3:ListBucket",
-                "s3:PutObject",
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
+            'Effect': 'Allow',
+            'Action': [
+                'polly:SynthesizeSpeech',
+                's3:ListBucket',
+                's3:PutObject',
+                'logs:CreateLogGroup',
+                'logs:CreateLogStream',
+                'logs:PutLogEvents'
             ],
-            "Resource": "*"
+            'Resource': '*'
         }
     ]
 }
@@ -163,7 +163,7 @@ sing_intent = {
                                                ACCOUNT_ID, FUNCTION_NAME)},
                              u'type': u'CodeHook'},
     u'name': u'Sing',
-    u'sampleUtterances': [u'Sing a song'],
+    u'sampleUtterances': [u'Sing that song'],
     u'slots': [{u'name': u'song',
                 u'priority': 1,
                 u'sampleUtterances': [],
@@ -269,7 +269,7 @@ bot_alias = {
 
 # Setup code
 
-os.system('chalice deploy')
+#os.system('chalice deploy')
 
 lex = boto3.client('lex-models', region_name='us-east-1')
 lambd = boto3.client('lambda', region_name='us-east-1')
@@ -283,22 +283,21 @@ def wait(secs):
 # delete everything
 
 try:
-    iam.delete_role_policy(
-        RoleName='zzzs',
+    iam.delete_role_policy(RoleName='shakirachatbot-role',
         PolicyName='BotAccess'
     )
     print 'Deleted inline policy for role shakirachatbot-role'
     wait(3)
 except ClientError, e:
-    if e.response['Error']['Code'] != 'NoSuchEntityException':
+    if e.response['Error']['Code'] != 'NoSuchEntity':
         raise
 
 try:
-    iam.delete_role(RoleName='zzzs')
-    print 'Deleted role shakirachatbot-role'
+    iam.delete_role(RoleName='shakirachatbot-role')
+    print 'Deleted custom role shakirachatbot-role'
     wait(3)
 except ClientError, e:
-    if e.response['Error']['Code'] != 'NoSuchEntityException':
+    if e.response['Error']['Code'] != 'NoSuchEntity':
         raise
 
 try:
@@ -430,13 +429,13 @@ except ClientError, e:
         raise
 
 
-role = iam.create_role(RoleName='zzzs', AssumeRolePolicyDocument=json.dumps(role_policy_document))['Role']
+role = iam.create_role(RoleName='shakirachatbot-role', AssumeRolePolicyDocument=json.dumps(role_policy_document))['Role']
 print 'Created custom role shakirachatbot-role'
 wait(3)
 
-iam.put_role_policy(RoleName='zzzs', PolicyName='BotAccess', PolicyDocument=json.dumps(inline_policy))
+iam.put_role_policy(RoleName='shakirachatbot-role', PolicyName='BotAccess', PolicyDocument=json.dumps(inline_policy))
 print 'Created inline policy for role shakirachatbot-role'
-wait(7)
+wait(10)
 
 lambd.create_function(**botcontrol_function)
 print 'Created lambda function {}'.format(FUNCTION_NAME)

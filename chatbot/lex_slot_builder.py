@@ -16,6 +16,6 @@ def build_concert_locations_slot():
 def build_enum_dictionary(value_list):
     content = []
     for i in value_list:
-        d = {unicode('value'): unicode(i, "utf-8")}
+        d = {unicode('value'): unicode(i, 'utf-8')}
         content.append(d)
     return content
