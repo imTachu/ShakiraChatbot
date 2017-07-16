@@ -34,7 +34,7 @@ def test_about_song():
 
 def test_deal_with_it_negative():
     response = botcontrol.deal_with_it(intent_request_mock('DealWithIt', None, 'Agh, you suck!'))
-    assert response['dialogAction']['message']['content'] == 'Actually... I KNOW I\'m pretty amazing!'
+    assert response['dialogAction']['message']['content'] == 'That\'s a pity :/ ...nah, I KNOW I\'m pretty amazing!'
 
 
 def test_deal_with_it_neutral():

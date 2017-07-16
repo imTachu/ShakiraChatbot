@@ -3,10 +3,6 @@
 lib/
 *.egg-info/
 
-.chalice/*
-!.chalice/config.json
-venv/
-
 .idea
 *.iml
 *.zip

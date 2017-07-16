@@ -1,6 +1,7 @@
 import boto3
 import json
 import os
+import subprocess
 import time
 from chatbot.lex_slot_builder import build_songs_slot, build_albums_slot, build_concert_locations_slot
 from zipfile import ZipFile
@@ -13,13 +14,6 @@ FUNCTION_NAME = 'Shakira-Botcontrol'
 with ZipFile('lambda-package.zip', 'w') as myzip:
     myzip.write('chatbot/__init__.py')
     myzip.write('chatbot/botcontrol.py')
-    myzip.write('chatbot/dict_operations.py')
-    myzip.write('chatbot/lex_handler.py')
-    myzip.write('chatbot/lex_slot_builder.py')
-    myzip.write('resources/__init__.py')
-    myzip.write('resources/concerts.py')
-    myzip.write('resources/albums.py')
-    myzip.write('resources/helper_responses.py')
 
 ''' Initial Bot configuration '''
 
@@ -269,8 +263,6 @@ bot_alias = {
 
 # Setup code
 
-#os.system('chalice deploy')
-
 lex = boto3.client('lex-models', region_name='us-east-1')
 lambd = boto3.client('lambda', region_name='us-east-1')
 iam = boto3.client('iam', region_name='us-east-1')
@@ -506,5 +498,7 @@ print 'Created bot alias'
 wait(5)
 
 os.unlink('lambda-package.zip')
+
+subprocess.call(['./deploy.sh'])
 
 print 'All done, exiting...'

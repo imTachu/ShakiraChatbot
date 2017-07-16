@@ -41,7 +41,7 @@ This bot is available in Facebook Messenger.
 * This can be extendend A LOT (not-only studio albums), chart positions, etc
 * Normalization was not taken into account. If you look for a concert in New York, the chatbot won't find it if you type for example, NYC. 
 
-[credentials]: https://github.com/awslabs/chalice#credentials
+[credentials]: http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
 [facebook-deploy]: http://docs.aws.amazon.com/lex/latest/dg/fb-bot-association.html
 [hackathon-main]: http://www.amazondcn.com/challenge/index.html
 [mashable-twinword-api-key]: https://market.mashape.com/twinword/sentiment-analysis-free

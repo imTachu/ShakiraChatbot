@@ -86,7 +86,7 @@ def deal_with_it(intent_request):
     elif sentiment_type == 'neutral':
         return close(intent_request['sessionAttributes'], 'Fulfilled', 'Bah, ok, whatever ;)')
     elif sentiment_type == 'negative':
-        return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'Actually... I KNOW I\'m pretty amazing!', '#DealWithIt', None,
+        return close_with_response_card(intent_request['sessionAttributes'], 'Fulfilled', 'That\'s a pity :/ ...nah, I KNOW I\'m pretty amazing!', '#DealWithIt', None,
                              None, 'https://s3.amazonaws.com/shakirachatbot/gifs/dealwithit_n.gif')
 
 
