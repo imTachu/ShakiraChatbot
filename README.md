@@ -24,7 +24,7 @@ AWS Lex powers up this chatbot through 10 intents:
 | `Sing`                                                | Creates an audio file from `AWS Polly` on the fly, stores it in a S3 bucket. Uses `ElicitSlot` and `SessionAttributes`, reproduces the audio file in Facebook Messenger.                            | As of today, in the official Lex docs 'voice' and 'audio' are mentioned, but there aren't any examples. I wanted to include it here just to experiment the whole generate/store/reproduce flow.                      |
 | `DealWithIt`                                          | This intent is created for the solely purpose of handling hate/love feelings towards the chatbot. I didn't want to create two intents for hate and love, so this one uses a sentiment analysis API. | Until developing this project, sentiment analysis felt to me like something very demanding and time-consuming to include in a project. Although, here I do it very simplistic, it wasn't such a hassle to implement. |
 | `AboutAlbum`, `AboutSong`, `RandomGif`, `WhenConcert` | Reply based on context (slots), uses slot validations, `ElicitSlot`, `Close`.                                                                                                                       | Custom slot types values generated from the datasource itself.                                                                                                                                                       |
-| `Greeting`, `Helper`, `SocialMedia`, `Thanks`         | These intents provide plain simple answers, necessary to fulfill some basic "human" interactions.                                                                                                   | IMHO, chatbots should be capable of replying to simple nice human things like "Thanks".                                                                                                                              |
+| `Greeting`, `Helper`, `SocialMedia`, `Thanks`         | These intents provide plain simple answers, necessary to fulfill some basic "human" interactions.                                                                                                   | IMHO, a chatbot should handle the most basic human interactions (hello, please, thanks) properly.                                                                                                                    |
 
 ## Setup steps
 
@@ -45,7 +45,9 @@ This bot is available in Facebook Messenger. Unfortunately it is not yet ready f
 ## Notes and known issues
 
 * This bot was created from a sample bot version given for the [GOTO Amazon Chatbot Challenge.][hackathon-main]
-* Normalization was not taken into account. If you look for a concert in New York, the chatbot won't find it if you type for example, NYC. 
+* Somewhere, I have a problem with encoding from Lex to Lambda (Not the other way around) since many of the songs have spanish accents. That really is the very next thing.
+* I should find a way to receive cities in a friendlier way. As of today, people should type for example, New York, not NYC.
+* Give this bot such a personality and fluency while adding more functionalities that even Shakira herself would like to chat with it!
 * AWS Lex is a 'new' service, this chatbot brought a lot of insights, I have made a [blog post][blog-post] about it if you want to take a look :) 
 
 [blog-post]: lalala
