@@ -28,6 +28,8 @@ AWS Lex powers up this chatbot through 10 intents:
 | `AboutAlbum`, `AboutSong`, `RandomGif`, `WhenConcert` | Reply based on context (slots), uses slot validations, `ElicitSlot`, `Close`.                                                                                                                        | Custom slot types values generated from the datasource itself.                                                                                                                                                                                  |
 | `Greeting`, `Helper`, `SocialMedia`, `Thanks`         | These intents provide plain simple answers, necessary to fulfill some basic "human" interactions.                                                                                                    | IMHO, a chatbot should handle the most basic human interactions (hello, please, thanks) properly.                                                                                                                                               |
 
+![Architecture](graphics/architecture.png)
+
 ## Setup steps
 
 1. Configure your AWS access key and secret key [properly][credentials]. DO NOT publish your access key and secret key to public sites such as GitHub!
